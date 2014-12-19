@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>What-is-kohana - My Octopress Blog</title>
-  <meta name="author" content="Your Name">
+  <title>Installing Kohana 3 - Kohana 3 Development</title>
+  <meta name="author" content="Samnan ur Rehman">
 
   
-  <meta name="description" content=" What-is-kohana Dec 19th, 2014 1:05 pm Kohana is an elegant PHP framework developed from scratch. Dec 19th, 2014 1:05 pm Tweet Recent Posts ">
+  <meta name="description" content="Installing Kohana 3 Dec 19th, 2014 4:09 pm There are two basic ways to install Kohana 3. Download the latest KO3 package from its website. Extract &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,10 +18,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://samnan.github.io/ko3docs/what-is-kohana">
+  <link rel="canonical" href="http://samnan.github.io/ko3docs/installation">
   <link href="/ko3docs/favicon.png" rel="icon">
   <link href="/ko3docs/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/ko3docs/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <link href="/ko3docs/atom.xml" rel="alternate" title="Kohana 3 Development" type="application/atom+xml">
   <script src="/ko3docs/javascripts/modernizr-2.0.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
@@ -36,9 +36,9 @@
 
 <body   >
   <header role="banner"><hgroup>
-  <h1><a href="/ko3docs/">My Octopress Blog</a></h1>
+  <h1><a href="/ko3docs/">Kohana 3 Development</a></h1>
   
-    <h2>A blogging framework for hackers.</h2>
+    <h2>Application developer guide</h2>
   
 </hgroup>
 
@@ -67,16 +67,35 @@
 <article role="article">
   
   <header>
-    <h1 class="entry-title">What-is-kohana</h1>
+    <h1 class="entry-title">Installing Kohana 3</h1>
     <p class="meta">
 
 
 
 
-<time class='entry-date' datetime='2014-12-19T13:05:00+05:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:05 pm</span></time></p>
+<time class='entry-date' datetime='2014-12-19T16:09:00+05:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:09 pm</span></time></p>
   </header>
   
-  <p>Kohana is an elegant PHP framework developed from scratch.</p>
+  <p>There are two basic ways to install Kohana 3.</p>
+
+<ul>
+<li><p>Download the latest KO3 package from its <a href="http://kohanaframework.org/download">website</a>. Extract it into the web server document root, or any subfolder if you like.</p></li>
+<li><p>Clone the Kohana 3 application repository from GitHub. In your console/terminal, change directory to webserver document root (or subfolder) and run this command:</p>
+
+<pre><code>  # assuming your webserver document root is /var/www/
+  cd /var/www/
+  git clone git@github.com:kohana/kohana.git
+</code></pre></li>
+</ul>
+
+
+<p>Wait for the download to complete. After that, change directory to kohana and initialize and download it&rsquo;s dependencies:</p>
+
+<pre><code>    cd kohana
+    git submodule update --init
+</code></pre>
+
+<p>This will take a little time, once it&rsquo;s done, proceed to <a href="/ko3docs/kohana-configuration">configuring Kohana</a>.</p>
 
   
     <footer>
@@ -87,13 +106,13 @@
 
 
 
-<time class='entry-date' datetime='2014-12-19T13:05:00+05:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:05 pm</span></time>
+<time class='entry-date' datetime='2014-12-19T16:09:00+05:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:09 pm</span></time>
         
       </p>
       
         <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://samnan.github.io/ko3docs/what-is-kohana/index.html" data-via="" data-counturl="http://samnan.github.io/ko3docs/what-is-kohana/index.html" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://samnan.github.io/ko3docs/installation/index.html" data-via="" data-counturl="http://samnan.github.io/ko3docs/installation/index.html" >Tweet</a>
   
   
   
@@ -126,7 +145,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Your Name -
+  Copyright &copy; 2014 - Samnan ur Rehman -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
