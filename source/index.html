@@ -1,24 +1,27 @@
 ---
 layout: default
 ---
-
 <div class="blog-index">
-  {% assign index = true %}
-  {% for post in paginator.posts %}
-  {% assign content = post.content %}
     <article>
-      {% include article.html %}
+		<header>
+			 <h1 class="entry-title">Brief Introduction</h1>
+		</header>
+      <p>Kohana 3 (most often referred to as KO3) is an elegant PHP framework developed from scratch.
+		It differs from other PHP frameworks in the sense that it aims to be lean and mean, and follows best coding practices.
+		Every new version of Kohana 3 aims to get closer to standards, and remains as clean and swift as possible.</p>
+
+		<p>While Kohana 3 maintains its own <a href="http://kohanaframework.org/3.3/guide">online documentation</a>,
+		which is the best source for looking up any particular information regarding Kohana,
+		the purpose of this site is to provide a headstart for creating web applications in KO3.
+		The online documentation also includes an API viewer, that provides detailed explanation of Kohana 3 core and modules.</p>
+		
+		<p>This documentation assumes you have decent experience with coding practices, MVC, PHP and Web servers. Git knowledge is not necessary, but it allows for
+		a faster development cycle using GitHub's Kohana repositories.</p>
+		
+		<p>To learn more about coding practices, <a href="http://sourcemaking.com">head over to sourcemaking</a>.</p>
+		<p>To learn about MVC, read <a href="http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">here</a>.</p>
+		<p>To begin coding a web application with KO3, let's <a href="/installation">install Kohana 3 now</a>.</p>
     </article>
-  {% endfor %}
-  <div class="pagination">
-    {% if paginator.next_page %}
-      <a class="prev" href="{{paginator.next_page_path}}">&larr; Older</a>
-    {% endif %}
-    <a href="/blog/archives">Blog Archives</a>
-    {% if paginator.previous_page %}
-    <a class="next" href="{{paginator.previous_page_path}}">Newer &rarr;</a>
-    {% endif %}
-  </div>
 </div>
 <aside class="sidebar">
   {% if site.blog_index_asides.size %}
