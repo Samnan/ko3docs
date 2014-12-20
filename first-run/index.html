@@ -9,7 +9,7 @@
   <meta name="author" content="Samnan ur Rehman">
 
   
-  <meta name="description" content=" Running Your Kohana Application Dec 19th, 2014 5:00 pm To be continued. Dec 19th, 2014 5:00 pm Tweet Recent Posts ">
+  <meta name="description" content="Running Your Kohana Application Dec 19th, 2014 5:00 pm Testing the application Navigating to http://localhost/kohana/ in your browser should show & &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,7 +76,29 @@
 <time class='entry-date' datetime='2014-12-19T17:00:00+05:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:00 pm</span></time></p>
   </header>
   
-  <p>To be continued.</p>
+  <h3>Testing the application</h3>
+
+<ul>
+<li><p>Navigating to <code><a href="http://localhost/kohana/">http://localhost/kohana/</a></code> in your browser should show &lsquo;Hello world!&rsquo;.</p></li>
+<li><p>If you have configured Kohana 3 application on a virtual host, then the virtual host url should show the same
+results as above. For example, if your virtual host is configured as <code><a href="http://kohana3.localhost">http://kohana3.localhost</a></code>,
+then running the url in browser should show &lsquo;Hello World!&rsquo;.</p></li>
+</ul>
+
+
+<h3>Troubleshooting</h3>
+
+<p>If you do not get the usual &lsquo;Hello World!&rsquo; from the Kohana application output, then you should check and make sure:</p>
+
+<ul>
+<li>You have set the correct &lsquo;base_url&rsquo; in <code>application/bootstrap.php</code> file.</li>
+<li>You have set the correct REWRITE_BASE configuration directive in <code>.htaccess</code> file (if you are using the
+.htacess file for clean urls).</li>
+</ul>
+
+
+<p>We are now ready to <a href="/ko3docs/configuration/modules">configure modules</a> for our application before we start working on the
+rest of the application code.</p>
 
   
     <footer>
