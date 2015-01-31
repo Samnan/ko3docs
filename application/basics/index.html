@@ -9,7 +9,7 @@
   <meta name="author" content="Samnan ur Rehman">
 
   
-  <meta name="description" content=" Kohana Basics Dec 19th, 2014 5:00 pm To be continued Dec 19th, 2014 5:00 pm Tweet Recent Posts ">
+  <meta name="description" content="Kohana Basics Dec 19th, 2014 5:00 pm Before you begin writing code for your application, you need to know some specifics about Kohana 3 so that you &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,7 +76,81 @@
 <time class='entry-date' datetime='2014-12-19T17:00:00+05:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:00 pm</span></time></p>
   </header>
   
-  <p>To be continued</p>
+  <p>Before you begin writing code for your application, you need to know some specifics about Kohana 3 so that you can utilize the framework to your advantage.</p>
+
+<ul>
+<li><p><strong>Routes:</strong> Routes are one of the strongest suite of KO3. Every application must have one route (which is defined in <code>application/bootstrap.php</code> for you). Apart from that, you can create specific routes for different parts of the application. Routes will be dealt in details later on, so for now you can safely continue building your application with just the default route.</p></li>
+<li><p><strong>Transparent Extension:</strong> Another cool feature of KO3 is the ability to allow extending the core functionality with minimum fuss. We will take a look at this later also, when we develop our sample application.</p></li>
+<li><p><strong>HMVC: </strong>HMVC is the ability to use any request in the application internally in a clean manner. Again, we will use this later on to show you how to use Kohana requests internally to your advantage.</p></li>
+</ul>
+
+
+<h3>MVC architecture</h3>
+
+<p>Just like any other MVC framework, every request in Kohana is handled by a controller, which can utilize models and views to generate the desired output for the web application. A sample controller is provided with the Kohana installation, so you can use it as a starting point.</p>
+
+<h3>Creating your first controller</h3>
+
+<p>In the application folder in a default Kohana installation, you will find one controller named Welcome.php. For our application, we want our homepage controller to be called Home, so we make that change by following these steps:</p>
+
+<ul>
+<li><p>change the <code>default</code> route right at the end in <code>application/bootstrap.php</code> to use Home controller instead of Welcome controller.</p>
+
+<pre><code>  Route::set('default', '(&lt;controller&gt;(/&lt;action&gt;(/&lt;id&gt;)))')
+      -&gt;defaults(array(
+          'controller' =&gt; 'home',  // change from welcome to home
+          'action'     =&gt; 'index',
+  ));
+</code></pre></li>
+<li><p>Rename Welcome.php to Home.php in the <code>application/classes/Controllers</code> folder.</p></li>
+<li><p>Edit Home.php, and change the name of the controller class to Controller_Home, so that the code becomes:</p>
+
+<pre><code>  &lt;?php defined('SYSPATH') or die('No direct script access.');
+
+  class Controller_Home extends Controller {
+
+      public function action_index()
+      {
+          $this-&gt;response-&gt;body('hello, world!');
+      }
+
+  } // End Home
+</code></pre></li>
+</ul>
+
+
+<p>You will notice that there is no php end tag at the end of the file, instead just a comment. The end tag is optional which is a php feature, and the comment is a Kohana convention and completely optional, so you remove it if you like. We have left it here and just changed it to match the controller name so that we know it is the end of the controller code.</p>
+
+<h3>Using a View class</h3>
+
+<p>As you can see, our homepage just outputs a classic greeting instead of doing something really useful. We are going to change that to utilize a View and output a nice html code for a start. To do that, first create a file called &lsquo;home.php&rsquo; inside <code>application/view</code> folder. Put the following simple HTML code in the home.php file.</p>
+
+<pre><code>    &lt;h1&gt;Welcome to Kohana 3&lt;/h1&gt;
+    &lt;p&gt;This is the homepage&lt;/p&gt;
+    &lt;p&gt;The view file for the homepage is located at &lt;?php echo $file; ?&gt;&lt;/p&gt;
+</code></pre>
+
+<p><em>Please note that the name of the view file need not be the same as controller. You can name it whatever you like.</em></p>
+
+<h3>Using the view in a controller</h3>
+
+<p>Now that we have created the view file, we will change our controller code to use the view as our output. You will also see that we will pass a <code>file</code> parameter to the view, which is then displayed on the page. Change the code inside <code>application/classes/Controller/home.php</code> as below:</p>
+
+<pre><code>    class Controller_Home extends Controller {
+
+        public function action_index()
+        {
+            $file = Kohana::find_file('views', 'home');
+            $view = View::factory('home', array('file' =&gt; $file));
+            $this-&gt;response-&gt;body($view);
+        }
+
+    } // End Home
+</code></pre>
+
+<p><em></em></p>
+
+<p>In the next section, we will learn how to <a href="/ko3docs/application/models">create models</a> to use database related functionality in our application.</p>
 
   
     <footer>
@@ -126,7 +200,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Samnan ur Rehman -
+  Copyright &copy; 2015 - Samnan ur Rehman -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
