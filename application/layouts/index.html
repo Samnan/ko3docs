@@ -55,10 +55,9 @@
   </fieldset>
 </form>
   
-<ul class="main-navigation">
-  <li><a href="/ko3docs/">Blog</a></li>
-  <li><a href="/ko3docs/blog/archives">Archives</a></li>
-</ul>
+<!--ul class="main-navigation">
+  <li><a href=""></a></li>
+</ul-->
 
 </nav>
   <div id="main">
@@ -78,7 +77,14 @@
   
   <p>Unlike other frameworks out there which provide built-in view parsers and template languages, Kohana 3 has a very simplistic template based controller for a start. It is so simple you can use it to create your own customized layout and template logic. Also, Kohana works neatly with third party templat engines (like smarty) and there are many modules available that allow quick integration of any of these template engines into your Kohana engine.</p>
 
-<p>Since we are more concerned on getting to know Kohana better, we will use Kohana&rsquo;s built-in template controller to create our sample application layout.</p>
+<p>Since we are more concerned on getting to know Kohana better, we will use Kohana&rsquo;s built-in template controller to create our sample application layout. There are three steps involved in the process:</p>
+
+<ul>
+<li>Creating a Template Controller</li>
+<li>Creating the view template</li>
+<li>Using the Template Controller</li>
+</ul>
+
 
 <h3>Creating a Template Controller</h3>
 
@@ -128,7 +134,7 @@ The code for Controller_Common is as follows:</p>
 </ul>
 
 
-<h3>Using the view template in Controllers</h3>
+<h3>Using the Template Controller</h3>
 
 <p>After making that above changes, if you go back and run your application, you will it works without any changes and the browser shows the same output as before. This is because all our controllers are derived from the &lsquo;Controller&rsquo; class.</p>
 
@@ -189,15 +195,18 @@ The code for Controller_Common is as follows:</p>
 <aside class="sidebar">
   
     <section>
-  <h1>Recent Posts</h1>
+  <h1>Navigation</h1>
   <ul id="recent_posts">
-    
+     <li class="post"><a href="installation">Installation</a></li>
+     <li class="post"><a href="kohana-configuration">Configuration</a></li>
+     <li class="post"><a href="first-run">Running your application</a></li>
+     <li class="post"><a href="configuration/modules">Configuring Modules</a></li>
+     <li class="post"><a href="application/basics">Application Basics</a></li>
+     <li class="post"><a href="application/model">Creating Models</a></li>
+     <li class="post"><a href="application/data-manipulation">Common Database Operations</a></li>
+     <li class="post"><a href="application/web-forms">Creating Forms</a></li>
   </ul>
 </section>
-
-
-
-
 
   
 </aside>
