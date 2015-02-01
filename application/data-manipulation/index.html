@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Common Database Operations - Kohana 3 Development</title>
+  <meta name="author" content="Samnan ur Rehman">
+
+  
+  <meta name="description" content="Common Database Operations Jan 11th, 2015 5:00 pm Before we create our first model, you should remember that there are three ways to encapsulate &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://samnan.github.io/ko3docs/application/data-manipulation">
+  <link href="/ko3docs/favicon.png" rel="icon">
+  <link href="/ko3docs/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/ko3docs/atom.xml" rel="alternate" title="Kohana 3 Development" type="application/atom+xml">
+  <script src="/ko3docs/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/ko3docs/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/ko3docs/">Kohana 3 Development</a></h1>
+  
+    <h2>Application developer guide</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/ko3docs/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:samnan.github.io/ko3docs" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/ko3docs/">Blog</a></li>
+  <li><a href="/ko3docs/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Common Database Operations</h1>
+    <p class="meta">
+
+
+
+
+<time class='entry-date' datetime='2015-01-11T17:00:00+05:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:00 pm</span></time></p>
+  </header>
+  
+  <p>Before we create our first model, you should remember that there are three ways to encapsulate database functionality in your Kohana application. They are described below:</p>
+
+<p>*<strong>Models: </strong>Models provide a simplistic approach to query databases and perform other data manipulation operations in your application. Models are also the fastest performance wise, since they do not add any overhead to your database code, but you need to write relatively more code inside models as opposed to other methods.</p>
+
+<p>*<strong>ORM: </strong>The official ORM module provided with Kohana provides functionality similar to other object relational mapping libraries that you will find for PHP. Since using ORM is the simplest approach, and there are tutorials in the Kohana documentation for utilizing ORM module, we will stick to using plain models so we can understand the database module in Kohana 3 in detail.</p>
+
+<ul>
+<li><strong>Third Party Modules: </strong> Like the official ORM module, there are many other ORM and database wrappers available for Kohana 3 on the web. You can try out any of them to see if you like a particular module instead of using the Kohana provided database modules.</li>
+</ul>
+
+
+<h3>Database configuration</h3>
+
+<p>Before we begin creating our first model, we must setup our database access by specifying the database configuration for our application. To do this, first copy the file <code>modules/database/config/database.php</code> to your <code>application/config</code> folder. After that, edit the file you just put in your <code>application/config</code> folder, and change the settings to match for your database server.</p>
+
+<h3>Creating your first Model</h3>
+
+<p>All models in Kohana follow the same file naming convention like controllers, and go inside <code>application/classes/Model</code> folder. For our application, we will create our model file called &lsquo;Users.php&rsquo;. The code for the file is as follows:</p>
+
+<pre><code>    &lt;?php defined('SYSPATH') or die('No direct script access.');
+
+    class Model_Users extends Model {
+
+        public function find_all()
+        {
+            return DB::select()
+                -&gt;as_object()
+                -&gt;from("users")
+                -&gt;execute();
+        }
+
+    } // End Model_Users
+</code></pre>
+
+<p><em>You can view Kohana documentation on the details of using the DB class. Also note that DB and Database are two separate classes. &lsquo;DB&rsquo; class provides portable use of database, while the &lsquo;Database&rsquo; class is the underlying wrapper for basic database connection.</em></p>
+
+<p>The structure for the &lsquo;users&rsquo; table in our database is as below:</p>
+
+<pre><code>        CREATE TABLE `users` (
+        `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `email` varchar(50) NOT NULL,
+        `fullname` varchar(25),
+        `status` int(1) UNSIGNED DEFAULT 1 NOT NULL,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY(`email`)
+        );
+</code></pre>
+
+<p><em>You should add a few records in the user table after you create it, so that you can see the output when we use data from the model in our views.</em></p>
+
+<p>Now that we have the model created, let&rsquo;s use it in our controller. Create a new controller called &lsquo;Users&rsquo; in the <code>classes/Controller</code> folder. The filename would be &lsquo;Users.php&rsquo; and the code inside it as follows:</p>
+
+<pre><code>    &lt;?php defined('SYSPATH') or die('No direct script access.');
+
+    class Controller_Users extends Controller {
+
+        public function action_index()
+        {
+            $users = Model::factory('users')-&gt;find_all();
+            $view = View::factory('users/list', array('users' =&gt; $users));
+            $this-&gt;response-&gt;body($view);
+        }
+
+    } // End Users
+</code></pre>
+
+<p>You can see that our view name in the controller is &lsquo;users/list&rsquo;, instead of users. This simply indicates that &lsquo;users&rsquo; is a subfolder in views and it contains the view file called &lsquo;list.php&rsquo;.</p>
+
+<p>The code for &lsquo;list.php&rsquo; is as follows (make sure the file is inside the folder <code>application/views/users</code>):</p>
+
+<pre><code>    &lt;h1&gt;User List&lt;/h1&gt;
+    &lt;table&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Email&lt;/th&gt;&lt;th&gt;Full Name&lt;/th&gt;&lt;th&gt;Status&lt;/th&gt;&lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+    &lt;?php foreach($users as $user): ?&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;?php echo $user-&gt;id; ?&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;?php echo HTML::chars($user-&gt;id); ?&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;?php echo HTML::chars($user-&gt;fullname); ?&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;?php echo ($user-&gt;status == 1) ? 'Active' : 'Inactive'; ?&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;/tr&gt;
+    &lt;?php endforeach; ?&gt;
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+</code></pre>
+
+<p><code>HTML::chars()</code> is a utility function in Kohana to escape characters properly in html before display. It is necesary to use it (or any other function you like) to avoid security problems with user data in your application.
+You will also note that each user record is an object, since we specifically used <code>DB::as_object()</code> method in our controller to fetch user records in object form.</p>
+
+<p>In the next section, we explain some <a href="/ko3docs/database/operations">mostly used database operations</a> to show how to perform data manipulation using the DB class, before we use a template controller to make our application output look good in a browser.</p>
+
+  
+    <footer>
+      <p class="meta">
+        
+        
+
+
+
+
+<time class='entry-date' datetime='2015-01-11T17:00:00+05:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:00 pm</span></time>
+        
+      </p>
+      
+        <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://samnan.github.io/ko3docs/application/data-manipulation/index.html" data-via="" data-counturl="http://samnan.github.io/ko3docs/application/data-manipulation/index.html" >Tweet</a>
+  
+  
+  
+</div>
+
+      
+    </footer>
+  
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Samnan ur Rehman -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
