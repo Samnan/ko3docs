@@ -38,18 +38,27 @@ All models in Kohana follow the same file naming convention like controllers, an
 
 <em>You can view Kohana documentation on the details of using the DB class. Also note that DB and Database are two separate classes. 'DB' class provides portable use of database, while the 'Database' class is the underlying wrapper for basic database connection.</em>
 
-The structure for the 'users' table in our database is as below:
+The structure for the 'users' and addresses table we use in our sample application is as below:
 	
 			CREATE TABLE `users` (
-			`id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-			`email` varchar(50) NOT NULL,
-			`fullname` varchar(25),
-			`status` int(1) UNSIGNED DEFAULT 1 NOT NULL,
-			PRIMARY KEY (`id`),
-			UNIQUE KEY(`email`)
+				`id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+				`email` varchar(50) NOT NULL,
+				`fullname` varchar(25),
+				`status` int(1) UNSIGNED DEFAULT 1 NOT NULL,
+				PRIMARY KEY (`id`),
+				UNIQUE KEY(`email`)
 			);
 			
-<em>You should add a few records in the user table after you create it, so that you can see the output when we use data from the model in our views.</em>
+			
+			CREATE TABLE `addresses` (
+				`id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+				`user_id` int(5) NOT NULL,
+				`city` varchar(50),
+				`zip` varchar(10),
+				PRIMARY KEY (`id`)
+			);
+			
+<em>You should add a few records in the tables after you create them, so that you can see the output when we use data from the model in our views.</em>
 
 Now that we have the model created, let's use it in our controller. Create a new controller called 'Users' in the <code>classes/Controller</code> folder. The filename would be 'Users.php' and the code inside it as follows:
 
@@ -79,7 +88,7 @@ The code for 'list.php' is as follows (make sure the file is inside the folder <
 		<?php foreach($users as $user): ?>
 			<tr>
 				<td><?php echo $user->id; ?></td>
-				<td><?php echo HTML::chars($user->id); ?></td>
+				<td><?php echo HTML::chars($user->email); ?></td>
 				<td><?php echo HTML::chars($user->fullname); ?></td>
 				<td><?php echo ($user->status == 1) ? 'Active' : 'Inactive'; ?></td>
 			</tr>
