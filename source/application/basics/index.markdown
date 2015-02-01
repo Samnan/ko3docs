@@ -70,9 +70,9 @@ Now that we have created the view file, we will change our controller code to us
 				
 		} // End Home
 
-<em></em>
+<em>Kohana::find_files() is a very useful core method of Kohana, which returns the final path to a file given its folder and filename. You can refer to the documentation for more information.</em>
 
-In the next section, we will learn how to [create models](/application/models) to use database related functionality in our application.
+In the next section, we will learn how to [create models](/application/models) to use a database in our application.
 
 
 
