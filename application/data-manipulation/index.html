@@ -9,7 +9,7 @@
   <meta name="author" content="Samnan ur Rehman">
 
   
-  <meta name="description" content="Common Database Operations Jan 11th, 2015 5:00 pm Before we create our first model, you should remember that there are three ways to encapsulate &hellip;">
+  <meta name="description" content="Common Database Operations Jan 11th, 2015 5:00 pm As explained previously, the DB class in Kohana provides fast database operations without any &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,99 +76,92 @@
 <time class='entry-date' datetime='2015-01-11T17:00:00+05:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:00 pm</span></time></p>
   </header>
   
-  <p>Before we create our first model, you should remember that there are three ways to encapsulate database functionality in your Kohana application. They are described below:</p>
+  <p>As explained previously, the DB class in Kohana provides fast database operations without any overhead involved, and is ideal for keeping your code portable, as well as easier to read. Below we will show common database operations performed using the DB class.</p>
 
-<p>*<strong>Models: </strong>Models provide a simplistic approach to query databases and perform other data manipulation operations in your application. Models are also the fastest performance wise, since they do not add any overhead to your database code, but you need to write relatively more code inside models as opposed to other methods.</p>
+<h3>Select Queries</h3>
 
-<p>*<strong>ORM: </strong>The official ORM module provided with Kohana provides functionality similar to other object relational mapping libraries that you will find for PHP. Since using ORM is the simplest approach, and there are tutorials in the Kohana documentation for utilizing ORM module, we will stick to using plain models so we can understand the database module in Kohana 3 in detail.</p>
+<p>By default, the result of a db select operation is a multidimensional array.</p>
 
-<ul>
-<li><strong>Third Party Modules: </strong> Like the official ORM module, there are many other ORM and database wrappers available for Kohana 3 on the web. You can try out any of them to see if you like a particular module instead of using the Kohana provided database modules.</li>
-</ul>
+<pre><code>        $users = DB::select()-&gt;from('users')-&gt;execute();
+        // $users = array of users, each user record is an array itself
+</code></pre>
 
+<p><strong>Selecting records as object array</strong></p>
 
-<h3>Database configuration</h3>
+<pre><code>        $users = DB::select()-&gt;as_object()-&gt;from('users')-&gt;execute();
+        // $users = array of user objects
+</code></pre>
 
-<p>Before we begin creating our first model, we must setup our database access by specifying the database configuration for our application. To do this, first copy the file <code>modules/database/config/database.php</code> to your <code>application/config</code> folder. After that, edit the file you just put in your <code>application/config</code> folder, and change the settings to match for your database server.</p>
+<p><em>The <code>as_object()</code> method call is not necessary right after select. You can use it anytime before calling <code>execute()</code></em>.</p>
 
-<h3>Creating your first Model</h3>
+<p><strong>Selecting a particular list of fields from user table</strong></p>
 
-<p>All models in Kohana follow the same file naming convention like controllers, and go inside <code>application/classes/Model</code> folder. For our application, we will create our model file called &lsquo;Users.php&rsquo;. The code for the file is as follows:</p>
+<pre><code>        $users = DB::select('id', 'email')-&gt;as_object()-&gt;from('users')-&gt;execute();
+</code></pre>
 
-<pre><code>    &lt;?php defined('SYSPATH') or die('No direct script access.');
+<p><strong>Selecting a field with an alias</strong></p>
 
-    class Model_Users extends Model {
+<pre><code>        $users = DB::select('id', array('fullname', 'displayname'))
 
-        public function find_all()
-        {
-            return DB::select()
-                -&gt;as_object()
-                -&gt;from("users")
+            -&gt;as_object()-&gt;from('users')-&gt;execute();
+        // each user object contains 'id' and 'displayname' property
+</code></pre>
+
+<p><strong>Using the infamous NOW() expression in select queries</strong></p>
+
+<pre><code>        $users = DB::select('*', array(DB::expr('NOW()'), 'current_time'))
+            -&gt;as_object()-&gt;from('users')-&gt;execute();
+        // each user object now also contains 'current_time' property
+</code></pre>
+
+<p><em><code>DB::expr()</code> allows using raw database expressions in queries which you do not want to be quoted automatically. Any expression you use with tis method should be escaped/quoted by yourself if it contains a user provided data variable.</em></p>
+
+<p><strong>Joins</strong></p>
+
+<pre><code>        $users = DB::select('users.*', 'addresses.city', 'addresses.zip')
+            -&gt;as_object()-&gt;from('users')
+            -&gt;join('addresses', 'left')
+            -&gt;on('addresses.user_id', '=', 'users.id')
+            -&gt;execute();
+        // each user object now also contains 'current_time' property
+</code></pre>
+
+<p><em>We are using a left join in our example as not all users may have an address. Skip the second parameter to use a regular join</em>.</p>
+
+<p><strong>Using Where clause</strong></p>
+
+<pre><code>        $active_users = DB::select('users.*', 'addresses.city', 'addresses.zip')
+            -&gt;as_object()-&gt;from('users')
+            -&gt;join('addresses', 'left')
+            -&gt;on('addresses.user_id', '=', 'users.id')
+            -&gt;where('users.status', '=', 1)
+            -&gt;execute();
+</code></pre>
+
+<p>Other method follow the same pattern, e.g. <code>group_by()</code>, <code>having()</code> etc.</p>
+
+<h3>Insert Queries</h3>
+
+<pre><code>        $result = DB::insert('users', array('email', 'fullname', 'status'))
+                -&gt;values( array('john@mail.com', 'John Connor', 1) )
                 -&gt;execute();
-        }
-
-    } // End Model_Users
 </code></pre>
 
-<p><em>You can view Kohana documentation on the details of using the DB class. Also note that DB and Database are two separate classes. &lsquo;DB&rsquo; class provides portable use of database, while the &lsquo;Database&rsquo; class is the underlying wrapper for basic database connection.</em></p>
+<p><em>The second parameter to <code>insert()</code> is optional, and if not provided means you are providing values for all fields of a table.</em></p>
 
-<p>The structure for the &lsquo;users&rsquo; table in our database is as below:</p>
+<h3>Update Queries</h3>
 
-<pre><code>        CREATE TABLE `users` (
-        `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-        `email` varchar(50) NOT NULL,
-        `fullname` varchar(25),
-        `status` int(1) UNSIGNED DEFAULT 1 NOT NULL,
-        PRIMARY KEY (`id`),
-        UNIQUE KEY(`email`)
-        );
+<pre><code>        $user_id = 1;
+        $user_data = array('email' =&gt; 'sarah@mail.com', 'fullname' =&gt; 'Sarah Connors');
+        DB::update( 'users' )
+            -&gt;set( $user_data )
+            -&gt;where( 'id', '=', $user_id )
+            -&gt;execute();
 </code></pre>
 
-<p><em>You should add a few records in the user table after you create it, so that you can see the output when we use data from the model in our views.</em></p>
+<p>For more information, consult the Kohana documentation for details of any API for the database module.</p>
 
-<p>Now that we have the model created, let&rsquo;s use it in our controller. Create a new controller called &lsquo;Users&rsquo; in the <code>classes/Controller</code> folder. The filename would be &lsquo;Users.php&rsquo; and the code inside it as follows:</p>
-
-<pre><code>    &lt;?php defined('SYSPATH') or die('No direct script access.');
-
-    class Controller_Users extends Controller {
-
-        public function action_index()
-        {
-            $users = Model::factory('users')-&gt;find_all();
-            $view = View::factory('users/list', array('users' =&gt; $users));
-            $this-&gt;response-&gt;body($view);
-        }
-
-    } // End Users
-</code></pre>
-
-<p>You can see that our view name in the controller is &lsquo;users/list&rsquo;, instead of users. This simply indicates that &lsquo;users&rsquo; is a subfolder in views and it contains the view file called &lsquo;list.php&rsquo;.</p>
-
-<p>The code for &lsquo;list.php&rsquo; is as follows (make sure the file is inside the folder <code>application/views/users</code>):</p>
-
-<pre><code>    &lt;h1&gt;User List&lt;/h1&gt;
-    &lt;table&gt;
-        &lt;thead&gt;
-            &lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Email&lt;/th&gt;&lt;th&gt;Full Name&lt;/th&gt;&lt;th&gt;Status&lt;/th&gt;&lt;/tr&gt;
-        &lt;/thead&gt;
-        &lt;tbody&gt;
-    &lt;?php foreach($users as $user): ?&gt;
-        &lt;tr&gt;
-            &lt;td&gt;&lt;?php echo $user-&gt;id; ?&gt;&lt;/td&gt;
-            &lt;td&gt;&lt;?php echo HTML::chars($user-&gt;id); ?&gt;&lt;/td&gt;
-            &lt;td&gt;&lt;?php echo HTML::chars($user-&gt;fullname); ?&gt;&lt;/td&gt;
-            &lt;td&gt;&lt;?php echo ($user-&gt;status == 1) ? 'Active' : 'Inactive'; ?&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;/tr&gt;
-    &lt;?php endforeach; ?&gt;
-        &lt;/tbody&gt;
-    &lt;/table&gt;
-</code></pre>
-
-<p><code>HTML::chars()</code> is a utility function in Kohana to escape characters properly in html before display. It is necesary to use it (or any other function you like) to avoid security problems with user data in your application.
-You will also note that each user record is an object, since we specifically used <code>DB::as_object()</code> method in our controller to fetch user records in object form.</p>
-
-<p>In the next section, we explain some <a href="/ko3docs/database/operations">mostly used database operations</a> to show how to perform data manipulation using the DB class, before we use a template controller to make our application output look good in a browser.</p>
+<p>Let&rsquo;s move onto <a href="/ko3docs/application/layouts">creating layout template</a> for our application to make it look good in a browser and specifying additional information for the site.</p>
 
   
     <footer>

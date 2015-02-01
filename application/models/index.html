@@ -112,19 +112,28 @@
 
 <p><em>You can view Kohana documentation on the details of using the DB class. Also note that DB and Database are two separate classes. &lsquo;DB&rsquo; class provides portable use of database, while the &lsquo;Database&rsquo; class is the underlying wrapper for basic database connection.</em></p>
 
-<p>The structure for the &lsquo;users&rsquo; table in our database is as below:</p>
+<p>The structure for the &lsquo;users&rsquo; and addresses table we use in our sample application is as below:</p>
 
 <pre><code>        CREATE TABLE `users` (
-        `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-        `email` varchar(50) NOT NULL,
-        `fullname` varchar(25),
-        `status` int(1) UNSIGNED DEFAULT 1 NOT NULL,
-        PRIMARY KEY (`id`),
-        UNIQUE KEY(`email`)
+            `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+            `email` varchar(50) NOT NULL,
+            `fullname` varchar(25),
+            `status` int(1) UNSIGNED DEFAULT 1 NOT NULL,
+            PRIMARY KEY (`id`),
+            UNIQUE KEY(`email`)
+        );
+
+
+        CREATE TABLE `addresses` (
+            `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+            `user_id` int(5) NOT NULL,
+            `city` varchar(50),
+            `zip` varchar(10),
+            PRIMARY KEY (`id`)
         );
 </code></pre>
 
-<p><em>You should add a few records in the user table after you create it, so that you can see the output when we use data from the model in our views.</em></p>
+<p><em>You should add a few records in the tables after you create them, so that you can see the output when we use data from the model in our views.</em></p>
 
 <p>Now that we have the model created, let&rsquo;s use it in our controller. Create a new controller called &lsquo;Users&rsquo; in the <code>classes/Controller</code> folder. The filename would be &lsquo;Users.php&rsquo; and the code inside it as follows:</p>
 
@@ -155,7 +164,7 @@
     &lt;?php foreach($users as $user): ?&gt;
         &lt;tr&gt;
             &lt;td&gt;&lt;?php echo $user-&gt;id; ?&gt;&lt;/td&gt;
-            &lt;td&gt;&lt;?php echo HTML::chars($user-&gt;id); ?&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;?php echo HTML::chars($user-&gt;email); ?&gt;&lt;/td&gt;
             &lt;td&gt;&lt;?php echo HTML::chars($user-&gt;fullname); ?&gt;&lt;/td&gt;
             &lt;td&gt;&lt;?php echo ($user-&gt;status == 1) ? 'Active' : 'Inactive'; ?&gt;&lt;/td&gt;
         &lt;/tr&gt;
