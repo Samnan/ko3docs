@@ -85,7 +85,7 @@ For all our future work, we will be deriving all our controllers from Controller
 <em>You can go ahead and at this point create the 'css' folder along with the 'index.php' file, and put 'default.css' in it with some styles. After that refresh your browser to see the css inddeed loads correctly. If it does not, recheck your code to make sure you follow the guidelines above</em>.
 
 
-We are now ready to do more complex operations in our application, and we will begin by [creating forms](/application/web-forms) and see how to load data into from database, validate user submission and save the data back properly.
+We are now ready to do more complex operations in our application, and before we do that, let's see a few [How-to's and mostly used stuff](/application/how-tos) in Kohana 3.
 
 
 

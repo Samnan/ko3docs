@@ -50,7 +50,6 @@ By default, the result of a db select operation is a multidimensional array.
 				->join('addresses', 'left')
 				->on('addresses.user_id', '=', 'users.id')
 				->execute();
-			// each user object now also contains 'current_time' property
 
 <em>We are using a left join in our example as not all users may have an address. Skip the second parameter to use a regular join</em>.
 
@@ -64,6 +63,20 @@ By default, the result of a db select operation is a multidimensional array.
 				->where('users.status', '=', 1)
 				->execute();
 
+<strong>A simple but complex query example</strong>
+
+			$active_users = DB::select('users.*', 'addresses.city', 'addresses.zip', DB::expr('NOW() as current_time'))
+				->as_object()
+				->from('users')
+				->join('addresses', 'left')
+				->on('addresses.user_id', '=', 'users.id')
+				->where('users.status', '=', 1)
+				->and_where_open()
+					->where('users.fullname', 'IS NOT', NULL)
+					->or_where('users.email', 'IS NOT', NULL)
+				->and_where_close()
+				->execute();
+
 Other method follow the same pattern, e.g. <code>group_by()</code>, <code>having()</code> etc.
 
 ### Insert Queries
@@ -74,6 +87,8 @@ Other method follow the same pattern, e.g. <code>group_by()</code>, <code>having
 
 <em>The second parameter to <code>insert()</code> is optional, and if not provided means you are providing values for all fields of a table.</em>
 
+<em>The return value of <code>insert</code> operation is an array containing the result of the operation, and an auto_increment id value if the insert operation was successful</em>.
+
 ### Update Queries
 
 			$user_id = 1;
@@ -83,6 +98,7 @@ Other method follow the same pattern, e.g. <code>group_by()</code>, <code>having
 				->where( 'id', '=', $user_id )
 				->execute();
 
+<em>The return value of <code>update</code> is an array containing the result of the operation, and the number of rows affected</em>.
 
 For more information, consult the Kohana documentation for details of any API for the database module.
 

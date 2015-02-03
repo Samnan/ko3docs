@@ -72,6 +72,24 @@ Now that we have created the view file, we will change our controller code to us
 
 <em>Kohana::find_files() is a very useful core method of Kohana, which returns the final path to a file given its folder and filename. You can refer to the documentation for more information.</em>
 
+
+### Passing data to views
+You can pass data to the view by including an array of key value pairs in the <code>View::factory()</code> method call as shown above. If you wish to add data for your view after creating it, then you can use either 'set' or 'bind' method call as given in the followin example.
+
+
+			$first = 'first';
+			$second = 'second';
+			$view = View::factory('home', array('first' => $first));
+			
+			$view->set('second', $second);
+			
+			$view->bind('third', $third);
+			$third = MyClass::get_data();  // for example
+			
+			$this->response->body($view);
+
+The difference between 'set' and 'bind' is that set passes the variable to the view by value, while 'bind' passes it by reference. You will also note that we used 'bind' on the view first, then modified the value of the variable after 'bind' call. It is done explicitly to explain the passing by reference of the 'third' variable to the view.
+
 In the next section, we will learn how to [create models](/application/models) to use a database in our application.
 
 

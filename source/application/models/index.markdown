@@ -9,9 +9,9 @@ footer: true
 
 Before we create our first model, you should remember that there are three ways to encapsulate database functionality in your Kohana application. They are described below:
 
-*<strong>Models: </strong>Models provide a simplistic approach to query databases and perform other data manipulation operations in your application. Models are also the fastest performance wise, since they do not add any overhead to your database code, but you need to write relatively more code inside models as opposed to other methods.
+* <strong>Models: </strong>Models provide a simplistic approach to query databases and perform other data manipulation operations in your application. Models are also the fastest performance wise, since they do not add any overhead to your database code, but you need to write relatively more code inside models as opposed to other methods.
 
-*<strong>ORM: </strong>The official ORM module provided with Kohana provides functionality similar to other object relational mapping libraries that you will find for PHP. Since using ORM is the simplest approach, and there are tutorials in the Kohana documentation for utilizing ORM module, we will stick to using plain models so we can understand the database module in Kohana 3 in detail. 
+* <strong>ORM: </strong>The official ORM module provided with Kohana provides functionality similar to other object relational mapping libraries that you will find for PHP. Since using ORM is the simplest approach, and there are tutorials in the Kohana documentation for utilizing ORM module, we will stick to using plain models so we can understand the database module in Kohana 3 in detail. 
 
 * <strong>Third Party Modules: </strong> Like the official ORM module, there are many other ORM and database wrappers available for Kohana 3 on the web. You can try out any of them to see if you like a particular module instead of using the Kohana provided database modules. 
 
