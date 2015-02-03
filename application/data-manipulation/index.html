@@ -122,7 +122,6 @@
             -&gt;join('addresses', 'left')
             -&gt;on('addresses.user_id', '=', 'users.id')
             -&gt;execute();
-        // each user object now also contains 'current_time' property
 </code></pre>
 
 <p><em>We are using a left join in our example as not all users may have an address. Skip the second parameter to use a regular join</em>.</p>
@@ -137,6 +136,21 @@
             -&gt;execute();
 </code></pre>
 
+<p><strong>A simple but complex query example</strong></p>
+
+<pre><code>        $active_users = DB::select('users.*', 'addresses.city', 'addresses.zip', DB::expr('NOW() as current_time'))
+            -&gt;as_object()
+            -&gt;from('users')
+            -&gt;join('addresses', 'left')
+            -&gt;on('addresses.user_id', '=', 'users.id')
+            -&gt;where('users.status', '=', 1)
+            -&gt;and_where_open()
+                -&gt;where('users.fullname', 'IS NOT', NULL)
+                -&gt;or_where('users.email', 'IS NOT', NULL)
+            -&gt;and_where_close()
+            -&gt;execute();
+</code></pre>
+
 <p>Other method follow the same pattern, e.g. <code>group_by()</code>, <code>having()</code> etc.</p>
 
 <h3>Insert Queries</h3>
@@ -148,6 +162,8 @@
 
 <p><em>The second parameter to <code>insert()</code> is optional, and if not provided means you are providing values for all fields of a table.</em></p>
 
+<p><em>The return value of <code>insert</code> operation is an array containing the result of the operation, and an auto_increment id value if the insert operation was successful</em>.</p>
+
 <h3>Update Queries</h3>
 
 <pre><code>        $user_id = 1;
@@ -157,6 +173,8 @@
             -&gt;where( 'id', '=', $user_id )
             -&gt;execute();
 </code></pre>
+
+<p><em>The return value of <code>update</code> is an array containing the result of the operation, and the number of rows affected</em>.</p>
 
 <p>For more information, consult the Kohana documentation for details of any API for the database module.</p>
 
@@ -202,7 +220,9 @@
      <li class="post"><a href="/ko3docs/application/basics">Application Basics</a></li>
      <li class="post"><a href="/ko3docs/application/models">Creating Models</a></li>
      <li class="post"><a href="/ko3docs/application/data-manipulation">Common Database Operations</a></li>
-     <li class="post"><a href="/ko3docs/application/web-forms">Creating Forms</a></li>
+     <li class="post"><a href="/ko3docs/application/how-tos">Mostly Used Stuff</a></li>
+     <li class="post"><a href="/ko3docs/application/routes">Creating Routes</a></li>
+     <li class="post"><a href="/ko3docs/application/hmvc">HMVC requests</a></li>
   </ul>
 </section>
 

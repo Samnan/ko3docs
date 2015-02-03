@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Mostly Used Stuff - Kohana 3 Development</title>
+  <meta name="author" content="Samnan ur Rehman">
+
+  
+  <meta name="description" content="Mostly Used Stuff Jan 10th, 2015 5:00 pm Redirecting to a new URL // anywhere, but preferrably inside a controller HTTP::redirect('/somehwere-else &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://samnan.github.io/ko3docs/application/how-tos">
+  <link href="/ko3docs/favicon.png" rel="icon">
+  <link href="/ko3docs/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/ko3docs/atom.xml" rel="alternate" title="Kohana 3 Development" type="application/atom+xml">
+  <script src="/ko3docs/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/ko3docs/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/ko3docs/">Kohana 3 Development</a></h1>
+  
+    <h2>Application developer guide</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/ko3docs/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:samnan.github.io/ko3docs" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<!--ul class="main-navigation">
+  <li><a href=""></a></li>
+</ul-->
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Mostly Used Stuff</h1>
+    <p class="meta">
+
+
+
+
+<time class='entry-date' datetime='2015-01-10T17:00:00+05:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:00 pm</span></time></p>
+  </header>
+  
+  <h3>Redirecting to a new URL</h3>
+
+<pre><code>        // anywhere, but preferrably inside a controller
+        HTTP::redirect('/somehwere-else/');
+</code></pre>
+
+<h3>Check if the user has requested the page through ajax</h3>
+
+<pre><code>        // inside a controller
+        if ($this-&gt;request-&gt;is_ajax()) { // do some stuff }
+
+        // anywhere else
+        if (Request::initial()-&gt;is_ajax()) { // do some stuff }
+</code></pre>
+
+<h3>Make the content download instead of sending to the browser</h3>
+
+<pre><code>        $data = 'some data generated or fetched from somewhere';
+        $this-&gt;response-&gt;body($data);
+        $this-&gt;response-&gt;send_file(TRUE, 'data.txt');  // data.txt will be downloaded by browser, containing contents of the $data variable
+
+        $filepath = DOCROOT . 'downloads/myfiles/data.zip';  // just an example
+        $this-&gt;response-&gt;send_file($filepath, 'data.zip');   // data.zip will be downloaded by browser (you can skip the second parameter also)
+
+        // delete the file after sending to the browser automatically
+        $this-&gt;response-&gt;send_file($filepath, 'something.zip', array('delete' =&gt; TRUE));
+</code></pre>
+
+<p><em>Ideally you will almost always use download functionality inside your controller. Will be really strange to be using it elsewhere!</em>.</p>
+
+<h3>Getting configuration variables</h3>
+
+<pre><code>        // get the name of default database our application uses
+        $db_name = Kohana::$config-&gt;load('database.default.connection.database');
+
+        // get the default database character set being used
+        $db_charset = Kohana::$config-&gt;load('database.default.charset');
+
+        // get the whole database configuration
+        $db_info = Kohana::$config-&gt;load('database');
+</code></pre>
+
+<h3>Logging errors and messages</h3>
+
+<pre><code>        Kohana::$log-&gt;add(Log::ERROR, 'something wrong happened');
+
+        Kohana::$log-&gt;add(Log::INFO, 'user registration completed');
+
+        Kohana::$log-&gt;add(Log::INFO, 'user :user logged in at :time', array(
+            ':user' =&gt; $user-&gt;login_id,
+            ':time' =&gt; date("Y-m-d H:i:s")
+        ));
+
+        Kohana::$log-&gt;add(Log::DEBUG, 'debug information for some reason');
+</code></pre>
+
+<p><em>You can control whether the log statements in your code actually go into the log or get ignored. See Kohana documentation of <code>Log</code> class to find out how to do that</em>.</p>
+
+<h3>Using Session variables</h3>
+
+<pre><code>        $session = Session::instance();  // session type depends on the config you set (e.g. native PHP sessions, stored inside db etc)
+
+        $session-&gt;set('user_id', $user-&gt;id);
+
+        $user_id = $session-&gt;get('user_id');
+
+        $session-&gt;delete('user_id');
+</code></pre>
+
+<h3>Exceptions</h3>
+
+<pre><code>        // throw a 404 exception for a missing downloadable file
+        if (!file_exists($download_file)) {
+            throw new Http_Exception_404('Download file invalid: :file',
+                array(':file' =&gt; $download_file)
+            );
+            // another way to do the same
+            throw Http_Exception::factory(404, 'Download file invalid: :file',
+                array(':file' =&gt; $download_file)
+            );
+        }
+</code></pre>
+
+<p>In the next section, we will be <a href="/ko3docs/application/routes">creating additional routes</a> to see the power of Kohana 3 routes and their use in a real application.</p>
+
+  
+    <footer>
+      <p class="meta">
+        
+        
+
+
+
+
+<time class='entry-date' datetime='2015-01-10T17:00:00+05:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:00 pm</span></time>
+        
+      </p>
+      
+        <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://samnan.github.io/ko3docs/application/how-tos/index.html" data-via="" data-counturl="http://samnan.github.io/ko3docs/application/how-tos/index.html" >Tweet</a>
+  
+  
+  
+</div>
+
+      
+    </footer>
+  
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Navigation</h1>
+  <ul id="recent_posts">
+     <li class="post"><a href="/ko3docs/installation">Installation</a></li>
+     <li class="post"><a href="/ko3docs/kohana-configuration">Configuration</a></li>
+     <li class="post"><a href="/ko3docs/first-run">Running your application</a></li>
+     <li class="post"><a href="/ko3docs/configuration/modules">Configuring Modules</a></li>
+     <li class="post"><a href="/ko3docs/application/basics">Application Basics</a></li>
+     <li class="post"><a href="/ko3docs/application/models">Creating Models</a></li>
+     <li class="post"><a href="/ko3docs/application/data-manipulation">Common Database Operations</a></li>
+     <li class="post"><a href="/ko3docs/application/how-tos">Mostly Used Stuff</a></li>
+     <li class="post"><a href="/ko3docs/application/routes">Creating Routes</a></li>
+     <li class="post"><a href="/ko3docs/application/hmvc">HMVC requests</a></li>
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Samnan ur Rehman -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

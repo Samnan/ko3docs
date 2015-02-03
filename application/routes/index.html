@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Creating Routes - Kohana 3 Development</title>
+  <meta name="author" content="Samnan ur Rehman">
+
+  
+  <meta name="description" content="Creating Routes Jan 11th, 2015 5:00 pm As explained previously, Kohana 3 has a powerful route system, and while you can have the &lsquo;default& &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://samnan.github.io/ko3docs/application/routes">
+  <link href="/ko3docs/favicon.png" rel="icon">
+  <link href="/ko3docs/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/ko3docs/atom.xml" rel="alternate" title="Kohana 3 Development" type="application/atom+xml">
+  <script src="/ko3docs/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/ko3docs/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/ko3docs/">Kohana 3 Development</a></h1>
+  
+    <h2>Application developer guide</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/ko3docs/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:samnan.github.io/ko3docs" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<!--ul class="main-navigation">
+  <li><a href=""></a></li>
+</ul-->
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Creating Routes</h1>
+    <p class="meta">
+
+
+
+
+<time class='entry-date' datetime='2015-01-11T17:00:00+05:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:00 pm</span></time></p>
+  </header>
+  
+  <p>As explained previously, Kohana 3 has a powerful route system, and while you can have the &lsquo;default&rsquo; route for most of your puropses, sometimes a specialized route is needed to perform specific operations.</p>
+
+<h3>Default route functionality</h3>
+
+<p>The default route included in <code>application/bootstrap.php</code> file allows using any number of controllers and methods within them. Also, there is an additional &lsquo;id&rsquo; parameter that you can provide in the URL and use that id parameter in your code for any purpose.</p>
+
+<p>For example, in our sample application, we have a url like <code>/users</code>. Let&rsquo;s assume we want to add a new url to our application at <code>/users/info</code>, which will take an id after the url and display the user&rsquo;s information.</p>
+
+<p>We will modify the Users controller and add a new method for this purpose.</p>
+
+<pre><code>    class Controller_Users extends Controller_Common {
+
+        public function action_info()
+        {
+            // try to get the id from url parameter
+            $user_id = $this-&gt;request-&gt;param('id');
+
+            // show 404 page if user_id is either not passed through the url, or is not a valid numeric id value
+            if ( !$user_id || !Valid::digit($user_id) ) {
+                throw Http_Exception::factory(404, 'Invalid or missing User ID [:id]', array(':id' =&gt; $user_id));
+            }
+
+            // use the user id
+            $user = Model::factory('users')-&gt;find_by_id($user_id);
+            ...
+            ...
+
+        }
+
+    }
+</code></pre>
+
+<p>As you can see, we use the &lsquo;param&rsquo; method of Request class to get our id parameter. First we validate it to make sure we have a valid numeric id passed, and then process the id further after validation.</p>
+
+<h3>Specialized Routes</h3>
+
+<p>While the default route is pretty ok for most purposes, often you will need to create some special purpose routes. For our example, we will try to solve the problem of generating an image thumbnail from a large image source through our application.</p>
+
+<p>Our image urls will be of the following nature:</p>
+
+<p><code>/images/one-fine-image/1024/768/png</code></p>
+
+<p><code>/images/another-image/1024/768/jpg</code></p>
+
+<p><code>/images/image_with_underscores/800/600</code></p>
+
+<p>We can see that our image urls have these specification:</p>
+
+<ul>
+<li>url must start with &lsquo;images/&rsquo;</li>
+<li>second parameter must be a file name, and can only contain alphanumeric characters, dashes and underscores</li>
+<li>third parameter is the width of the image</li>
+<li>third parameter is the height of the image</li>
+<li>fifth parameter specifies the image file type. Also this an optional parameter, so if you do not specify it, a jpg version of the image will be returned</li>
+</ul>
+
+
+<p>Now for our purpose, we will first create a new route in <code>application/bootstrap.php</code> before the default route like this:</p>
+
+<pre><code>        Route::set(
+            'image-thumb',
+            'images/&lt;filename&gt;/&lt;width&gt;/&lt;height&gt;(/&lt;filetype&gt;)',
+            array(
+                'filename' =&gt; '[a-zA-Z0-9_-]+',
+                'width'    =&gt; '\d+',
+                'height'   =&gt; '\d+',
+                'filetype' =&gt; 'jpg|png|gif'
+            )
+        )
+        -&gt;defaults(array(
+            'controller' =&gt; 'Images',
+            'action'     =&gt; 'index',
+            'filetype'   =&gt; 'jpg'
+        ));
+</code></pre>
+
+<p>Here, &lsquo;image-thumb&rsquo; is a friendly name for our route. The second parameter specifies the url structure, while the third parameter defines the format of each parameter.</p>
+
+<p>The <code>->defaults()</code> method sets the default value for route, and as you can see, we specify the filetype to be &lsquo;jpg&rsquo; if it is not provided.</p>
+
+<p>The code for Image controller will look something like this:</p>
+
+<pre><code>        &lt;?php defined('SYSPATH') or die('No direct script access.');
+
+        class Controller_Images extends Controller {
+
+            public function action_index()
+            {
+                $filename = $this-&gt;request-&gt;param('filename');
+                $width    = $this-&gt;request-&gt;param('width');
+                $height   = $this-&gt;request-&gt;param('height');
+                $filetype = $this-&gt;request-&gt;param('filetype');
+
+                ....
+            }
+
+        } // End Images
+</code></pre>
+
+<p>Kohana takes care of making sure the filename parameter does not contain any invalid characters, and the width and height are valid numbers. The only thing you will need to check is if the file really exists since the filename parameter can be any combination of numbers, characters, dashes and underscores.</p>
+
+<p><em>There is a <code>filter()</code> method available that you can use in your route definition to even validate the route parameters, before they are passed to your application. For our example, we have ignored that method specifically to keep this example simple enough to understand</em>.</p>
+
+<p>The next section explains <a href="/ko3docs/application/hmvc">HMVC requests</a> in Kohana 3 in details.</p>
+
+  
+    <footer>
+      <p class="meta">
+        
+        
+
+
+
+
+<time class='entry-date' datetime='2015-01-11T17:00:00+05:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:00 pm</span></time>
+        
+      </p>
+      
+        <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://samnan.github.io/ko3docs/application/routes/index.html" data-via="" data-counturl="http://samnan.github.io/ko3docs/application/routes/index.html" >Tweet</a>
+  
+  
+  
+</div>
+
+      
+    </footer>
+  
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Navigation</h1>
+  <ul id="recent_posts">
+     <li class="post"><a href="/ko3docs/installation">Installation</a></li>
+     <li class="post"><a href="/ko3docs/kohana-configuration">Configuration</a></li>
+     <li class="post"><a href="/ko3docs/first-run">Running your application</a></li>
+     <li class="post"><a href="/ko3docs/configuration/modules">Configuring Modules</a></li>
+     <li class="post"><a href="/ko3docs/application/basics">Application Basics</a></li>
+     <li class="post"><a href="/ko3docs/application/models">Creating Models</a></li>
+     <li class="post"><a href="/ko3docs/application/data-manipulation">Common Database Operations</a></li>
+     <li class="post"><a href="/ko3docs/application/how-tos">Mostly Used Stuff</a></li>
+     <li class="post"><a href="/ko3docs/application/routes">Creating Routes</a></li>
+     <li class="post"><a href="/ko3docs/application/hmvc">HMVC requests</a></li>
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Samnan ur Rehman -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
